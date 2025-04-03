@@ -13,21 +13,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ScrapegraphAI and related dependencies
-RUN pip install --no-cache-dir scrapegraphai
-RUN pip install --no-cache-dir scrapegraphai[burr]
-
-# Install Playwright dependencies and browsers
-RUN python3 -m playwright install-deps
-RUN python3 -m playwright install
-
-# Set working directory
 WORKDIR /app
 
-# Copy any additional project files if needed
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application
 COPY . .
 
 # Expose port if running a web service
 EXPOSE 8084
 
-# Default command (modify as needed)
+# Default command to run the application
 CMD ["python3", "-m", "scrapegraphai"]
